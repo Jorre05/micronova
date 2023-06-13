@@ -12,41 +12,40 @@ external_components:
 micronova:
   enable_rx_pin: 7
   update_interval: 10s
-    #  scan_memory_location: 0x20
+  scan_memory_location: 0x00
   room_temperature:
     memory_address: 0x01
-    name: ${long_name} Kamertemperatuur
-    id: ${short_name}_kamertemperatuur
+    name: Ambient temperature
+    id: ambient_temperature
   thermostat_temperature:
-    name: ${long_name} Thermostaat
-    id: ${short_name}_thermostaat
+    name: Stove thermostat temperature
   fumes_temperature:
-    name: ${long_name} Rookgastemperatuur
-    id: ${short_name}_rookgastemperatuur
+    name: Smoke temperature
   stove_power:
-    name: ${long_name} Power
-    id: ${short_name}_power
+    name: Stove current power
   fan_speed:
     fan_rpm_offset: 240
-    name: ${long_name} Ventilator RPM
-    id: ${short_name}_rpm
+    name: Fan RPM
+    id: fan_rpm
   memory_address_sensor:
     memory_location: 0x20
     memory_address: 0x7d
-    name: ${long_name} Adres sensor
-    id: ${short_name}_adres_sensor
+    name: Memory Adres sensor
+    id: mem_adres_sensor
   stove_state:
     memory_address: 0x21
-    name: ${long_name} status
-    id: ${short_name}_status
+    name: Stove Status
   stove_switch:
     memory_location: 0x80
     memory_address: 0x21
     memory_data_on: 0x01
     memory_data_off: 0x06
-    name: ${long_name} Kachel aan/uit
+    name: Switch stove on/off
   but_temp_up:
-    name: ${long_name} Temp. omhoog
+    name: Increase thermostat
+    memory_location: 0xA0
+    memory_address: 0x7D
+    memory_data: 0x21
   but_temp_down:
-    name: ${long_name} Temp omlaag
+    name: Decrease thermostat
 ```
