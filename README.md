@@ -3,12 +3,21 @@ ESPhome component for Micronova board based pellet stoves.
 There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/pull/4760). Go there for a link to the complete documentation.
 https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
 
+Note: It seems that the code does not check whether base types (sensor, switch,..) have been included. To force these types in your config you must add them explicitly. This will be fixed in the future.
+
 Example config:
 ```yaml
 external_components:
   - source: github://Jorre05/micronova
     components: [ micronova ]
 
+sensor:
+
+text_sensor:
+
+switch:
+
+button:
 
 micronova:
   enable_rx_pin: 7
