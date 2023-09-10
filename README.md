@@ -7,6 +7,12 @@ Documentation is currently not up-to-date. The component is now separated from t
 
 Example config:
 ```yaml
+uart:
+  tx_pin: 5
+  rx_pin: 4
+  baud_rate: 1200
+  stop_bits: 2
+
 external_components:
   - source: github://Jorre05/micronova
     components: [ micronova ]
@@ -29,7 +35,7 @@ sensor:
     fumes_temperature:
       name: Fumes temperature
     stove_power:
-      name: ${long_name} Power
+      name: Stove power level
     fan_speed:
       fan_rpm_offset: 240
       name: Fan RPM
