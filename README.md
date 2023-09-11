@@ -5,6 +5,20 @@ Documentation: https://deploy-preview-2890--esphome.netlify.app/components/micro
 
 Documentation is currently not up-to-date. The component is now separated from the sensors, switches and buttons. Follow the example below.
 
+Make sure to configure the correct IO pins for the UART and the enable_rx.
+Users have reported than when you got the interface board from Philibert.c, then the pin-config below should work:
+
+```yaml
+uart:
+  tx_pin: D4
+  rx_pin: D3
+  baud_rate: 1200
+  stop_bits: 2
+
+micronova:
+  enable_rx_pin: D2
+```
+
 Example config:
 ```yaml
 uart:
