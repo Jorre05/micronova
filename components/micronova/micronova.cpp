@@ -75,7 +75,15 @@ void MicroNova::write_address(uint8_t location, uint8_t address, uint8_t data) {
 
 int MicroNova::read_address(uint8_t addr, uint8_t reg) {
   uint8_t data[2] = {0, 0};
+  uint8_t trash_rx;
   uint16_t checksum = 0;
+
+  // clear rx buffer. 
+  // Stove hickups may cause late replies in the rx
+  while(this->available()) {
+    this->read_byte(&trash_rx);
+    ESP_LOGW(TAG, "Reading excess byte 0x%02X",trash_rx);
+  }
 
   this->enable_rx_pin_->digital_write(true);
   this->write_byte(addr);
@@ -94,8 +102,8 @@ int MicroNova::read_address(uint8_t addr, uint8_t reg) {
 
   checksum = ((uint16_t)addr + (uint16_t)reg + (uint16_t)data[1]) & 0xFF;
   if ( data[0] != checksum) {
-    ESP_LOGE(TAG, "Checksum missmatch! From [0x%02X:0x%02X] received [0x%02X,0x%02X]. Expected 0x%02X, got 0x%02X", addr, reg,
-             data[0], data[1], data[0], checksum);
+    ESP_LOGE(TAG, "Checksum missmatch! From [0x%02X:0x%02X] received [0x%02X,0x%02X]. Expected 0x%02X, got 0x%02X", addr,
+             reg, data[0], data[1], checksum, data[0]);
     return -1;
   } else {
     return ((int) data[1]);
