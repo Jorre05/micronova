@@ -4,7 +4,8 @@ There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/
 Documentation: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
 
 Documentation is currently not up-to-date. The component is now separated from the sensors, switches and buttons. Follow the example below.
-The current version contains breaking changes. If you want the stable version, use this
+The current version contains breaking changes. If you want the stable version, use this external component configuration:
+
 ```yaml
 external_components:
   - source: github://Jorre05/micronova@v2.1.0
