@@ -40,12 +40,15 @@ text_sensor:
     stove_state:
       name: Stove status
 
+number:
+  - platform: micronova
+    thermostat_temperature:
+      name: Thermostat temperature
+
 sensor:
   - platform: micronova
     room_temperature:
       name: Room temperature
-    thermostat_temperature:
-      name: Thermostat temperature
     fumes_temperature:
       name: Fumes temperature
     stove_power:
@@ -53,6 +56,10 @@ sensor:
     fan_speed:
       fan_rpm_offset: 240
       name: Fan RPM
+    water_temperature:
+      name: Water temperature
+    water_pressure:
+      name: Water pressure
     memory_address_sensor:
       memory_location: 0x20
       memory_address: 0x7d
@@ -60,14 +67,14 @@ sensor:
 
 switch:
    - platform: micronova
-     stove_switch:
+     stove:
       name: Stove on/off switch
 
 button:
   - platform: micronova
-    but_temp_up:
+    temperature_up:
       name: Thermostat Up
-    but_temp_down:
+    temperature_down:
       name: Thermostat Down
 ```
 
