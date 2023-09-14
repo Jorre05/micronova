@@ -13,7 +13,7 @@ external_components:
 ```
 
 Make sure to configure the correct IO pins for the UART and the enable_rx.
-Users have reported than when you got the interface board from Philibert.c, then the pin-config below should work:
+Users have reported that when you got the interface board from Philibert.c, then the pin-config below should work:
 
 ```yaml
 uart:
