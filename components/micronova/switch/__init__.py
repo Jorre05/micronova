@@ -12,14 +12,14 @@ from .. import (
     micronova_ns,
 )
 
-CONF_STOVE_SWITCH = "stove_switch"
+CONF_STOVE = "stove"
 CONF_MEMORY_DATA_ON = "memory_data_on"
 CONF_MEMORY_DATA_OFF = "memory_data_off"
 
 ICON_STATE = "mdi:checkbox-marked-circle-outline"
 
 TYPES = [
-    CONF_STOVE_SWITCH,
+    CONF_STOVE,
 ]
 
 MicroNovaSwitch = micronova_ns.class_("MicroNovaSwitch", switch.Switch, cg.Component)
@@ -27,7 +27,7 @@ MicroNovaSwitch = micronova_ns.class_("MicroNovaSwitch", switch.Switch, cg.Compo
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_MICRONOVA_ID): cv.use_id(MicroNova),
-        cv.Optional(CONF_STOVE_SWITCH): switch.switch_schema(
+        cv.Optional(CONF_STOVE): switch.switch_schema(
             MicroNovaSwitch,
             icon=ICON_STATE,
         )
@@ -40,14 +40,12 @@ CONFIG_SCHEMA = cv.Schema(
 
 async def to_code(config):
     mv = await cg.get_variable(config[CONF_MICRONOVA_ID])
-    for key in TYPES:
-        if key in config:
-            conf = config[key]
-            sw = await switch.new_switch(conf, mv)
-            cg.add(sw.set_memory_location(conf.get(CONF_MEMORY_LOCATION, 0x80)))
-            cg.add(sw.set_memory_address(conf.get(CONF_MEMORY_ADDRESS, 0x21)))
-            cg.add(sw.set_memory_data_on(conf[CONF_MEMORY_DATA_ON]))
-            cg.add(sw.set_memory_data_off(conf[CONF_MEMORY_DATA_OFF]))
-            if key == CONF_STOVE_SWITCH:
-                cg.add(sw.set_function(MicroNovaFunctions.STOVE_FUNCTION_SWITCH))
-                cg.add(mv.set_stove_switch(sw))
+
+    if stove_config := config.get(CONF_STOVE):
+        sw = await switch.new_switch(stove_config, mv)
+        cg.add(mv.set_stove(sw))
+        cg.add(sw.set_memory_location(stove_config.get(CONF_MEMORY_LOCATION, 0x80)))
+        cg.add(sw.set_memory_address(stove_config.get(CONF_MEMORY_ADDRESS, 0x21)))
+        cg.add(sw.set_memory_data_on(stove_config[CONF_MEMORY_DATA_ON]))
+        cg.add(sw.set_memory_data_off(stove_config[CONF_MEMORY_DATA_OFF]))
+        cg.add(sw.set_function(MicroNovaFunctions.STOVE_FUNCTION_SWITCH))
