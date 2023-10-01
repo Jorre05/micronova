@@ -1,7 +1,7 @@
 ESPhome component for Micronova board based pellet stoves. 
 
 There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/pull/4760).
-Documentation: [https://deploy-preview-2890--esphome.netlify.app/components/micronova.html](https://deploy-preview-2890--esphome.netlify.app/)
+Documentation: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
 
 Make sure to configure the correct IO pins for the UART and the enable_rx.
 Users have reported that when you got the interface board from Philibert.c, then the pin-config below should work:
