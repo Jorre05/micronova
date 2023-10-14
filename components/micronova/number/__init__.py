@@ -3,6 +3,7 @@ import esphome.config_validation as cv
 from esphome.components import number
 from esphome.const import (
     DEVICE_CLASS_TEMPERATURE,
+    STATE_CLASS_MEASUREMENT,
     UNIT_CELSIUS,
     CONF_MIN_VALUE,
     CONF_MAX_VALUE,
@@ -17,6 +18,8 @@ from .. import (
     MICRONOVA_LISTENER_SCHEMA,
     micronova_ns,
 )
+
+ICON_FLASH = "mdi:flash"
 
 CONF_THERMOSTAT_TEMPERATURE = "thermostat_temperature"
 CONF_POWER_LEVEL = "power_level"
@@ -38,7 +41,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_POWER_LEVEL): number.number_schema(
             MicroNovaNumber,
-            device_class=DEVICE_CLASS_TEMPERATURE,
+            icon=ICON_FLASH,
         )
         .extend(MICRONOVA_LISTENER_SCHEMA)
         .extend(
