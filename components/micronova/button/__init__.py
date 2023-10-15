@@ -32,7 +32,7 @@ CONFIG_SCHEMA = cv.Schema(
         )
         .extend(MICRONOVA_LISTENER_SCHEMA)
         .extend({cv.Optional(CONF_MEMORY_DATA, default=0x00): cv.hex_int_range()}),
-        cv.Optional(CONF_CUSTOMCONF_CUSTOM_BUTTON): button.button_schema(
+        cv.Optional(CONF_CUSTOM): button.button_schema(
             MicroNovaButton,
         )
         .extend(MICRONOVA_LISTENER_SCHEMA)
