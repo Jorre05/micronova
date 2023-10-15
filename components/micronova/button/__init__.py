@@ -16,6 +16,7 @@ MicroNovaButton = micronova_ns.class_("MicroNovaButton", button.Button, cg.Compo
 
 CONF_TEMPERATURE_UP = "temperature_up"
 CONF_TEMPERATURE_DOWN = "temperature_down"
+CONF_CUSTOM = "custom"
 CONF_MEMORY_DATA = "memory_data"
 
 CONFIG_SCHEMA = cv.Schema(
@@ -27,6 +28,11 @@ CONFIG_SCHEMA = cv.Schema(
         .extend(MICRONOVA_LISTENER_SCHEMA)
         .extend({cv.Optional(CONF_MEMORY_DATA, default=0x00): cv.hex_int_range()}),
         cv.Optional(CONF_TEMPERATURE_DOWN): button.button_schema(
+            MicroNovaButton,
+        )
+        .extend(MICRONOVA_LISTENER_SCHEMA)
+        .extend({cv.Optional(CONF_MEMORY_DATA, default=0x00): cv.hex_int_range()}),
+        cv.Optional(CONF_CUSTOMCONF_CUSTOM_BUTTON): button.button_schema(
             MicroNovaButton,
         )
         .extend(MICRONOVA_LISTENER_SCHEMA)
@@ -65,3 +71,18 @@ async def to_code(config):
         )
         cg.add(bt.set_memory_data(temperature_down_config[CONF_MEMORY_DATA]))
         cg.add(bt.set_function(MicroNovaFunctions.STOVE_FUNCTION_TEMP_DOWN))
+
+    if custom_button_config := config.get(CONF_CUSTOM):
+        bt = await button.new_button(custom_button_config, mv)
+        cg.add(
+            bt.set_memory_location(
+                custom_button_config.get(CONF_MEMORY_LOCATION, 0xA0)
+            )
+        )
+        cg.add(
+            bt.set_memory_address(
+                custom_button_config.get(CONF_MEMORY_ADDRESS, 0x7D)
+            )
+        )
+        cg.add(bt.set_memory_data(custom_button_config[CONF_MEMORY_DATA]))
+        cg.add(bt.set_function(MicroNovaFunctions.STOVE_FUNCTION_CUSTOM_BUTTON))

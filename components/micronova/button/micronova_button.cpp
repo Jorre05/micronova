@@ -16,6 +16,10 @@ void MicroNovaButton::press_action() {
       this->micronova_->update();
       break;
 
+    case MicroNovaFunctions::STOVE_FUNCTION_CUSTOM:
+      this->micronova_->write_address(this->memory_location_, this->memory_address_, this->memory_data_,);
+      this->micronova_->update();
+      break;
     default:
       break;
   }
