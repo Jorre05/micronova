@@ -85,4 +85,4 @@ async def to_code(config):
             )
         )
         cg.add(bt.set_memory_data(custom_button_config[CONF_MEMORY_DATA]))
-        cg.add(bt.set_function(MicroNovaFunctions.CONF_CUSTOM))
+        cg.add(bt.set_function(MicroNovaFunctions.STOVE_FUNCTION_CUSTOM))
