@@ -36,7 +36,7 @@ CONFIG_SCHEMA = cv.Schema(
             MicroNovaButton,
         )
         .extend(MICRONOVA_LISTENER_SCHEMA)
-        .extend({cv.Required(CONF_MEMORY_DATA, default=0x00): cv.hex_int_range()}),
+        .extend({cv.Required(CONF_MEMORY_DATA): cv.hex_int_range()}),
     }
 )
 
