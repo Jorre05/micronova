@@ -42,6 +42,10 @@ number:
   - platform: micronova
     thermostat_temperature:
       name: Thermostat temperature
+      step: 0.5
+  - platform: micronova
+    thermostat_temperature:
+      name: Thermostat temperature
 
 sensor:
   - platform: micronova
@@ -70,9 +74,11 @@ switch:
 
 button:
   - platform: micronova
-    temperature_up:
-      name: Thermostat Up
-    temperature_down:
-      name: Thermostat Down
+    custom_button:
+      name: Custom button
+      memory_location: 0x20
+      memory_address: 0x7d
+      memory_data: 0x08
+
 ```
 

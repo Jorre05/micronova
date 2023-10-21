@@ -4,7 +4,6 @@ namespace esphome {
 namespace micronova {
 
 void MicroNovaNumber::process_value_from_stove(int value_from_stove) {
-
   float new_sensor_value = 0;
 
   if (value_from_stove == -1) {
