@@ -42,7 +42,7 @@ number:
   - platform: micronova
     thermostat_temperature:
       name: Thermostat temperature
-      step: 0.5
+      step: 1
   - platform: micronova
     thermostat_temperature:
       name: Thermostat temperature
