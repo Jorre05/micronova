@@ -44,8 +44,8 @@ number:
       name: Thermostat temperature
       step: 1
   - platform: micronova
-    thermostat_temperature:
-      name: Thermostat temperature
+    power_level:
+      name: Power level
 
 sensor:
   - platform: micronova
