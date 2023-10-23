@@ -43,7 +43,6 @@ number:
     thermostat_temperature:
       name: Thermostat temperature
       step: 1
-  - platform: micronova
     power_level:
       name: Power level
 
