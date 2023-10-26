@@ -3,12 +3,13 @@
 There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/pull/4760).
 ESPHome documentation preview: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
 
-You have to build a simple circuit to interface with your stove (see documentation preview for the details. You can also order a board from [@philibertc] (https://github.com/philibertc), that should make it dead easy.
+You have to build a simple circuit to interface with your stove (see documentation preview for the details. You can also order a board from 
+[@philibertc](https://github.com/philibertc), that should make it dead easy.
 
 ## Example configuration
 
 The hardest part is to configure the correct IO pins for the UART and the enable_rx. 
-Users have reported that when you got the interface board from [@philibertc] (https://github.com/philibertc), then the pin-config below should work:
+Users have reported that when you got the interface board from [@philibertc](https://github.com/philibertc), then the pin-config below should work:
 
 ```yaml
 uart:
