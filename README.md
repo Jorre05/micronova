@@ -1,5 +1,4 @@
-# ESPhome component for Micronova board
-# based pellet stoves. 
+# ESPhome component for Micronova board based pellet stoves. 
 
 There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/pull/4760).
 Documentation preview: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
@@ -88,11 +87,11 @@ button:
 
 You can configure a climate component that links, back and forth, to the Micronova component. The example below will synchronize the thermostat setpoint and switch the stove on and off. Also when you change the thermostat setting on the stove or via the number component, that value will link back to the climate component. The same goes voor the stove switch state. 
 
-The if-conditions in the Lambda are there to make sure not to create an endless loop.
+  The if-conditions in the Lambda are there to make sure not to create an endless loop.
 
-This climate component looks just like any other climate control in Home Assistant.
+  This climate component looks just like any other climate control in Home Assistant.
 
-![Alt text](images/climate_pellet.png?raw=true "Climate overlay")
+![Climate screenshot](images/climate_pellet.png?raw=true "Climate overlay")
 
 ```yaml
 ...
