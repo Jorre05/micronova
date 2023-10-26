@@ -1,7 +1,10 @@
-ESPhome component for Micronova board based pellet stoves. 
+# ESPhome component for Micronova board
+# based pellet stoves. 
 
 There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/pull/4760).
-Documentation: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
+Documentation preview: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
+
+## Example configuration
 
 Make sure to configure the correct IO pins for the UART and the enable_rx.
 Users have reported that when you got the interface board from Philibert.c, then the pin-config below should work:
@@ -30,7 +33,7 @@ external_components:
     components: [ micronova ]
 
 micronova:
-  enable_rx_pin: 4
+  enable_rx_pin: 7
   update_interval: 20s
 
 text_sensor:
@@ -81,3 +84,92 @@ button:
 
 ```
 
+## Creating a climate component overlay
+
+You can configure a climate component that links, back and forth, to the Micronova component. The example below will synchronize the thermostat setpoint and switch the stove on and off. Also when you change the thermostat setting on the stove or via the number component, that value will link back to the climate component. The same goes voor the stove switch state. 
+
+The if-conditions in the Lambda are there to make sure not to create an endless loop.
+
+This climate component looks just like any other climate control in Home Assistant.
+
+![Alt text](images/climate_pellet.png?raw=true "Climate overlay")
+
+```yaml
+...
+sensor:
+  - platform: micronova
+    room_temperature:
+      name: Micronova Room Temperature
+      id: micronova_room_temperature
+...
+number:
+  - platform: micronova
+    thermostat_temperature:
+      name: Micronova Thermostat
+      id: micronova_thermostat
+      step: 1
+      on_value:
+        then:
+          - lambda: |-
+              if ( id(ha_thermostat).target_temperature != id(micronova_thermostat).state ) {
+                auto call = id(ha_thermostat).make_call();
+                call.set_target_temperature(id(micronova_thermostat).state);
+                call.perform();
+              }
+...
+switch:
+   - platform: micronova
+     stove:
+      name: Stove on/off
+      id: stove_switch
+      on_turn_on:
+        - lambda: |-
+            if ( id(ha_thermostat).mode != CLIMATE_MODE_HEAT ) {
+              auto call = id(ha_thermostat).make_call();
+              call.set_mode("HEAT");
+              call.perform();
+            }
+      on_turn_off:
+        - lambda: |-
+            if ( id(ha_thermostat).mode != CLIMATE_MODE_OFF ) {
+              auto call = id(ha_thermostat).make_call();
+              call.set_mode("OFF");
+              call.perform();
+            }
+...
+climate:
+  - platform: thermostat
+    name: HA thermostaat
+    id: ha_thermostat
+    sensor: micronova_room_temperature
+    min_idle_time: 0s
+    min_heating_off_time: 0s
+    min_heating_run_time: 0s
+    visual:
+      min_temperature:  0 °C
+      max_temperature: 40 °C
+      temperature_step: 1 °C
+    idle_action:
+      - lambda: |-
+          ESP_LOGD("main","Bogus idle action");
+    heat_action:
+      - lambda: |-
+          ESP_LOGD("main","Bogus heat action");
+    heat_mode:
+      - lambda: |-
+          if ( ! id(stove_switch).state ) {
+            id(stove_switch).turn_on();
+          }
+    off_mode:
+      - lambda: |-
+          if ( id(stove_switch).state ) {
+            id(stove_switch).turn_off();
+          }
+    target_temperature_change_action:
+       - lambda: |-
+           if ( id(ha_thermostat).target_temperature != id(micronova_thermostat).state ) {
+             auto call = id(micronova_thermostat).make_call();
+             call.set_value(id(ha_thermostat).target_temperature);
+             call.perform();
+           }
+```
