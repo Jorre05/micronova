@@ -153,7 +153,10 @@ climate:
     visual:
       min_temperature:  0 °C
       max_temperature: 40 °C
-      temperature_step: 1 °C
+     temperature_step:
+        target_temperature: 1
+        current_temperature: 0.5
+
     idle_action:
       - lambda: |-
           ESP_LOGD("main","Bogus idle action");
