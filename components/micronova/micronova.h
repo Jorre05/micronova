@@ -117,21 +117,19 @@ class MicroNovaButtonListener : public MicroNovaBaseListener {
 };
 
 /////////////////////////////////////////////////////////////////////
-// MicroNovaSerialTransmission
-struct MicroNovaSerialTransmission {
-  uint32_t request_transmission_time;
-  uint8_t memory_location;
-  uint8_t memory_address;
-  uint8_t data;
-  bool reply_pending;
-  MicroNovaSensorListener *initiating_listener;
-};
-
-/////////////////////////////////////////////////////////////////////
 // Main component class
 class MicroNova : public PollingComponent, public uart::UARTDevice {
  public:
   MicroNova() {}
+
+  struct MicroNovaSerialTransmission {
+    uint32_t request_transmission_time;
+    uint8_t memory_location;
+    uint8_t memory_address;
+    uint8_t data;
+    bool reply_pending;
+    MicroNovaSensorListener *initiating_listener;
+  };
 
   void setup() override;
   void loop() override;
@@ -157,6 +155,7 @@ class MicroNova : public PollingComponent, public uart::UARTDevice {
   void queue_write_request(uint8_t location, uint8_t address, uint8_t data);
 
  protected:
+
   uint8_t current_stove_state_ = 0;
 
   GPIOPin *enable_rx_pin_{nullptr};

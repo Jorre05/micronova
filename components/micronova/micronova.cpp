@@ -52,13 +52,13 @@ void MicroNova::loop() {
     this->current_transmission_.reply_pending = false;
     return;
   } else if (!this->current_transmission_.reply_pending) {
-    for (auto &mv_listener : this->micronova_listeners_) {
-      // check for non-empty write request queue
-      if ( this->write_request_queue_.size() > 0 ) {
-        this->write_address(this->write_request_queue_.front());
-        this->write_request_queue_.pop_front();
-      } else {
-        // If no write requests are pending, get on with reading.
+    // check for non-empty write request queue
+    if ( this->write_request_queue_.size() > 0 ) {
+      this->write_address(this->write_request_queue_.front());
+      this->write_request_queue_.pop_front();
+    } else {
+      // If no write requests are pending, get on with reading.
+      for (auto &mv_listener : this->micronova_listeners_) {
         if (mv_listener->get_needs_update()) {
           mv_listener->set_needs_update(false);
           this->current_transmission_.initiating_listener = mv_listener;
