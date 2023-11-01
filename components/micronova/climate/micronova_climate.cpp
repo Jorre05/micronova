@@ -8,14 +8,12 @@ void MicroNovaClimate::setup() {
   this->mode = climate::CLIMATE_MODE_HEAT;
 
   this->current_temperature_->add_on_state_callback([this](float state) {
-    ESP_LOGD(TAG, "current_temperature_ add_on_state_callback %f",state);
     this->current_temperature = state;
     this->publish_state();
   });
   this->current_temperature = this->current_temperature_->state;
 
   this->target_temperature_->add_on_state_callback([this](float state) {
-    ESP_LOGD(TAG, "target_temperature_ add_on_state_callback %f",state);
     this->target_temperature = state;
     this->publish_state();
   });
