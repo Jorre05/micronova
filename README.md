@@ -89,7 +89,7 @@ button:
 
 ## Creating a climate component overlay
 
-**I'm working on a climate component for the Mirconova platorm, in the future this may no longer be necessary**
+**I'm working on a climate component for the Mirconova platform, in the future this may no longer be necessary**
 
 You can configure a climate component that links, back and forth, to the Micronova component. The example below will synchronize the thermostat setpoint and switch the stove on and off. Also when you change the thermostat setting on the stove or via the number component, that value will link back to the climate component. The same goes voor the stove switch state. 
 
