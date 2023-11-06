@@ -12,7 +12,6 @@ namespace esphome {
 namespace micronova {
 
 static const char *const TAG = "micronova";
-static const int STOVE_REPLY_DELAY = 60;
 
 static const std::string STOVE_STATES[11] = {"Off",
                                              "Start",
@@ -140,6 +139,9 @@ class MicroNova : public PollingComponent, public uart::UARTDevice {
   void set_stove(MicroNovaSwitchListener *s) { this->stove_switch_ = s; }
   MicroNovaSwitchListener *get_stove_switch() { return this->stove_switch_; }
 
+  void set_serial_reply_delay(uint16_t d) { this->serial_reply_delay_ = d; }
+  uint16_t get_serial_reply_delay() { return this->serial_reply_delay_; }
+
  protected:
   uint8_t current_stove_state_ = 0;
 
@@ -153,6 +155,7 @@ class MicroNova : public PollingComponent, public uart::UARTDevice {
     MicroNovaSensorListener *initiating_listener;
   };
 
+  uint16_t serial_reply_delay_=80;
   Mutex reply_pending_mutex_;
   MicroNovaSerialTransmission current_transmission_;
 

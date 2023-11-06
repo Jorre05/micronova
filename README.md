@@ -150,13 +150,17 @@ climate:
     min_idle_time: 0s
     min_heating_off_time: 0s
     min_heating_run_time: 0s
+    default_preset: Startup preset
+    on_boot_restore_from: default
+    preset:
+      - name: Startup preset
+        default_target_temperature_low: 22
     visual:
       min_temperature:  0 °C
       max_temperature: 40 °C
      temperature_step:
         target_temperature: 1
         current_temperature: 0.5
-
     idle_action:
       - lambda: |-
           ESP_LOGD("main","Bogus idle action");

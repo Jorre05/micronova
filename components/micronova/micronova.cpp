@@ -22,6 +22,7 @@ void MicroNova::dump_config() {
   if (this->enable_rx_pin_ != nullptr) {
     LOG_PIN("  Enable RX Pin: ", this->enable_rx_pin_);
   }
+  ESP_LOGCONFIG(TAG, "  Serial reply delay: %d", this->serial_reply_delay_);
 
   for (auto &mv_sensor : this->micronova_listeners_) {
     mv_sensor->dump_config();
@@ -39,10 +40,10 @@ void MicroNova::update() {
 
 void MicroNova::loop() {
   // Only read one sensor that needs update per loop
-  // If STOVE_REPLY_DELAY time has passed since last loop()
+  // If serial_reply_delay_ time has passed since last loop()
   // check for a reply from the stove
   if ((this->current_transmission_.reply_pending) &&
-      (millis() - this->current_transmission_.request_transmission_time > STOVE_REPLY_DELAY)) {
+      (millis() - this->current_transmission_.request_transmission_time > this->serial_reply_delay_ )) {
     int stove_reply_value = this->read_stove_reply();
     if (this->current_transmission_.initiating_listener != nullptr) {
       this->current_transmission_.initiating_listener->process_value_from_stove(stove_reply_value);
