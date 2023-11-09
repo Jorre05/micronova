@@ -6,6 +6,8 @@ from esphome.const import (
     CONF_ID,
 )
 
+from esphome.core import TimePeriod
+
 CODEOWNERS = ["@jorre05"]
 
 DEPENDENCIES = ["uart"]
@@ -41,7 +43,10 @@ CONFIG_SCHEMA = (
         {
             cv.GenerateID(): cv.declare_id(MicroNova),
             cv.Required(CONF_ENABLE_RX_PIN): pins.gpio_output_pin_schema,
-            cv.Optional(CONF_SERIAL_REPLY_DELAY, default=60): cv.int_range(min=0, max=65535),
+            cv.Optional(CONF_SERIAL_REPLY_DELAY, default="60ms"): cv.All(
+                cv.positive_time_period_milliseconds,
+                cv.Range(min=TimePeriod(milliseconds=60),max=TimePeriod(milliseconds=65535)),
+            ),
         }
     )
     .extend(uart.UART_DEVICE_SCHEMA)
@@ -69,4 +74,4 @@ async def to_code(config):
     await uart.register_uart_device(var, config)
     enable_rx_pin = await cg.gpio_pin_expression(config[CONF_ENABLE_RX_PIN])
     cg.add(var.set_enable_rx_pin(enable_rx_pin))
-    cg.add(var.set_serial_reply_delay(config[CONF_SERIAL_REPLY_DELAY]))
+    cg.add(var.set_serial_reply_delay(config[CONF_SERIAL_REPLY_DELAY].total_milliseconds))
