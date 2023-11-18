@@ -160,14 +160,6 @@ class MicroNova : public PollingComponent, public uart::UARTDevice {
 
   GPIOPin *enable_rx_pin_{nullptr};
 
-  struct MicroNovaSerialTransmission {
-    uint32_t request_transmission_time;
-    uint8_t memory_location;
-    uint8_t memory_address;
-    bool reply_pending;
-    MicroNovaSensorListener *initiating_listener;
-  };
-
   uint16_t serial_reply_delay_=80;
   Mutex reply_pending_mutex_;
   MicroNovaSerialTransmission current_transmission_;
