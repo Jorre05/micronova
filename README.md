@@ -39,6 +39,7 @@ external_components:
 micronova:
   enable_rx_pin: 7
   update_interval: 20s
+  serial_reply_delay: 100ms
 
 text_sensor:
   - platform: micronova
