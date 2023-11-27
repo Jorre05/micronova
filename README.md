@@ -20,6 +20,7 @@ uart:
 
 micronova:
   enable_rx_pin: D2
+  serial_reply_delay: 100ms
 ```
 
 A generic example below. All buttons, sensors, text_sensors, switch and numbers accept a memory_location and memory_address. Specify those if the defaults don't work for you.
