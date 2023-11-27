@@ -52,12 +52,19 @@ void MicroNova::loop() {
     this->current_transmission_.reply_pending = false;
     return;
   } else if (!this->current_transmission_.reply_pending) {
-    for (auto &mv_listener : this->micronova_listeners_) {
-      if (mv_listener->get_needs_update()) {
-        mv_listener->set_needs_update(false);
-        this->current_transmission_.initiating_listener = mv_listener;
-        mv_listener->request_value_from_stove();
-        return;
+    // check for non-empty write request queue
+    if ( this->write_request_queue_.size() > 0 ) {
+      this->write_address(this->write_request_queue_.front());
+      this->write_request_queue_.pop_front();
+    } else {
+      // If no write requests are pending, get on with reading.
+      for (auto &mv_listener : this->micronova_listeners_) {
+        if (mv_listener->get_needs_update()) {
+          mv_listener->set_needs_update(false);
+          this->current_transmission_.initiating_listener = mv_listener;
+          mv_listener->request_value_from_stove();
+          return;
+        }
       }
     }
   }
@@ -116,14 +123,28 @@ int MicroNova::read_stove_reply() {
   return ((int) reply_data[1]);
 }
 
-void MicroNova::write_address(uint8_t location, uint8_t address, uint8_t data) {
+void MicroNova::queue_write_request(uint8_t location, uint8_t address, uint8_t data)
+{
+  MicroNovaSerialTransmission t;
+
+  t.request_transmission_time = 0;
+  t.memory_location = location;
+  t.memory_address = address;
+  t.data = data;
+  t.reply_pending = false;
+  t.initiating_listener = nullptr;
+
+  this->write_request_queue_.push_back(t);
+}
+
+void MicroNova::write_address(MicroNovaSerialTransmission write_request) {
   uint8_t write_data[4] = {0, 0, 0, 0};
   uint16_t checksum = 0;
 
   if (this->reply_pending_mutex_.try_lock()) {
-    write_data[0] = location;
-    write_data[1] = address;
-    write_data[2] = data;
+    write_data[0] = write_request.memory_location;
+    write_data[1] = write_request.memory_address;
+    write_data[2] = write_request.data;
 
     checksum = ((uint16_t) write_data[0] + (uint16_t) write_data[1] + (uint16_t) write_data[2]) & 0xFF;
     write_data[3] = checksum;
@@ -136,8 +157,8 @@ void MicroNova::write_address(uint8_t location, uint8_t address, uint8_t data) {
     this->enable_rx_pin_->digital_write(false);
 
     this->current_transmission_.request_transmission_time = millis();
-    this->current_transmission_.memory_location = location;
-    this->current_transmission_.memory_address = address;
+    this->current_transmission_.memory_location = write_request.memory_location;
+    this->current_transmission_.memory_address = write_request.memory_address;
     this->current_transmission_.reply_pending = true;
     this->current_transmission_.initiating_listener = nullptr;
   } else {

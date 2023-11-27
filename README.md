@@ -3,7 +3,7 @@
 There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/pull/4760).<br>
 ESPHome documentation preview: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
 
-You have to build a simple circuit to interface with your stove (see documentation preview for the details. You can also order a board from 
+You have to build a simple circuit to interface with your stove see documentation preview for the details. You can also order a board from 
 [@philibertc](https://github.com/philibertc), that should make it dead easy.
 
 ## Example configuration
