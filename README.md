@@ -1,7 +1,7 @@
 # ESPhome component for Micronova board based pellet stoves. 
 
-There is a pull request in the ESPHome repo (https://github.com/esphome/esphome/pull/4760).<br>
-ESPHome documentation preview: https://deploy-preview-2890--esphome.netlify.app/components/micronova.html
+The Micronova component is now part of ESPHome. This repo is still valid and is the first place where new features and bugfixes show up.
+Full ESPHome documentation: https://esphome.io/components/micronova
 
 You have to build a simple circuit to interface with your stove see documentation preview for the details. You can also order a board from 
 [@philibertc](https://github.com/philibertc), that should make it dead easy.
