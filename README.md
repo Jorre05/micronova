@@ -53,6 +53,7 @@ number:
       step: 1
     power_level:
       name: Power level
+      max_value: 4
 
 sensor:
   - platform: micronova

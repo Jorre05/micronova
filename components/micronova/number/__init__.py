@@ -5,6 +5,7 @@ from esphome.const import (
     DEVICE_CLASS_TEMPERATURE,
     UNIT_CELSIUS,
     CONF_STEP,
+    CONF_MAX_VALUE,
 )
 
 from .. import (
@@ -56,7 +57,10 @@ CONFIG_SCHEMA = cv.Schema(
             )
         )
         .extend(
-            {cv.Optional(CONF_MEMORY_WRITE_LOCATION, default=0xA0): cv.hex_int_range()}
+            {
+                cv.Optional(CONF_MEMORY_WRITE_LOCATION, default=0xA0): cv.hex_int_range(),
+                cv.Optional(CONF_MAX_VALUE, default=5): cv.int_range(min=1),
+            }
         ),
     }
 )
@@ -95,7 +99,7 @@ async def to_code(config):
         numb = await number.new_number(
             power_level_config,
             min_value=1,
-            max_value=5,
+            max_value=power_level_config.get(CONF_MAX_VALUE),
             step=1,
         )
         cg.add(numb.set_micronova_object(mv))
