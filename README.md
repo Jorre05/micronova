@@ -3,7 +3,7 @@
 The Micronova component is now part of ESPHome. This repo is still valid and is the first place where new features and bugfixes show up.
 Full ESPHome documentation: https://esphome.io/components/micronova
 
-You have to build a simple circuit to interface with your stove see documentation preview for the details. You can also order a board from 
+You have to build a simple circuit to interface with your stove see ESPHome documentation for the details. You can also order a board from 
 [@philibertc](https://github.com/philibertc), that should make it dead easy.
 
 ## Example configuration
