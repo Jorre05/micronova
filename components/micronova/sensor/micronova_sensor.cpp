@@ -5,7 +5,6 @@ namespace micronova {
 
 void MicroNovaSensor::process_value_from_stove(int value_from_stove) {
   if (value_from_stove == -1) {
-    this->publish_state(NAN);
     return;
   }
 
