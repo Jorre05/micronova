@@ -90,6 +90,53 @@ button:
 
 ```
 
+## Stoves that store the power level with an offset
+
+On some stoves the power level is not stored as a plain number. Instead, a fixed offset is added to it (for example, level 3 is stored as 139 with an offset of 136). These boards also copy their settings from EEPROM to RAM at startup and only use the RAM copy afterwards, so writing the power level to EEPROM alone has no effect until the stove restarts.
+
+Two options on `power_level` handle this:
+
+- `power_level_offset` (default `0`): subtracted from the value read from the stove, and added to the value written. `max_value` + `power_level_offset` must not exceed 255.
+- `ram_write_address` (optional): when set, the new power level is also written to this RAM address, so the change takes effect immediately. `ram_write_location` defaults to `0x80`. When `ram_write_address` is omitted, no extra write is sent.
+
+Example for such a stove:
+
+> **Tested on:** La Nordica-Extraflame Comfort Idro 13 kW (older pellet insert model, not the current Comfort Idro L80). Addresses and the power level offset may differ on newer models or other Micronova board versions.
+
+```yaml
+number:
+  - platform: micronova
+    power_level:
+      name: Power level
+      memory_location: 0x20    # read from EEPROM
+      memory_address: 0x60     # stored with offset (level 3 = 139)
+      max_value: 5
+      power_level_offset: 136
+      ram_write_address: 0x37  # RAM copy, also stored with offset
+
+sensor:
+  - platform: micronova
+    stove_power:
+      name: Stove power level
+      memory_location: 0x00
+      memory_address: 0x38     # actual power, stored WITHOUT offset (level 3 = 3)
+```
+
+On this stove type, EEPROM `0x60` and RAM `0x37` both hold the power level with the offset added, while RAM `0x38` (the actual running power) holds the plain value. That's why `power_level_offset` is set on the number but not needed on the `stove_power` sensor.
+
+## Water temperature reported at half the real value
+
+By default `water_temperature` divides the raw stove value by 2 (0.5 °C resolution). If your stove reports whole degrees, the sensor shows half the real temperature. Correct it with a standard ESPHome filter:
+
+```yaml
+sensor:
+  - platform: micronova
+    water_temperature:
+      name: Water temperature
+      filters:
+        - multiply: 2
+```
+
 ## Creating a climate component overlay
 
 **I'm working on a climate component for the Mirconova platform, in the future this may no longer be necessary**

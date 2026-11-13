@@ -23,8 +23,21 @@ ICON_FLASH = "mdi:flash"
 CONF_THERMOSTAT_TEMPERATURE = "thermostat_temperature"
 CONF_POWER_LEVEL = "power_level"
 CONF_MEMORY_WRITE_LOCATION = "memory_write_location"
+CONF_POWER_LEVEL_OFFSET = "power_level_offset"
+CONF_RAM_WRITE_LOCATION = "ram_write_location"
+CONF_RAM_WRITE_ADDRESS = "ram_write_address"
 
 MicroNovaNumber = micronova_ns.class_("MicroNovaNumber", number.Number, cg.Component)
+
+
+def validate_power_level_offset(config):
+    # The stove stores power_level + power_level_offset in a single byte
+    if config[CONF_MAX_VALUE] + config[CONF_POWER_LEVEL_OFFSET] > 255:
+        raise cv.Invalid(
+            f"{CONF_MAX_VALUE} + {CONF_POWER_LEVEL_OFFSET} must not exceed 255"
+        )
+    return config
+
 
 CONFIG_SCHEMA = cv.Schema(
     {
@@ -47,20 +60,32 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_STEP, default=1.0): cv.float_range(min=0.1, max=10.0),
             }
         ),
-        cv.Optional(CONF_POWER_LEVEL): number.number_schema(
-            MicroNovaNumber,
-            icon=ICON_FLASH,
-        )
-        .extend(
-            MICRONOVA_LISTENER_SCHEMA(
-                default_memory_location=0x20, default_memory_address=0x7F
+        cv.Optional(CONF_POWER_LEVEL): cv.All(
+            number.number_schema(
+                MicroNovaNumber,
+                icon=ICON_FLASH,
             )
-        )
-        .extend(
-            {
-                cv.Optional(CONF_MEMORY_WRITE_LOCATION, default=0xA0): cv.hex_int_range(),
-                cv.Optional(CONF_MAX_VALUE, default=5): cv.int_range(min=1),
-            }
+            .extend(
+                MICRONOVA_LISTENER_SCHEMA(
+                    default_memory_location=0x20, default_memory_address=0x7F
+                )
+            )
+            .extend(
+                {
+                    cv.Optional(
+                        CONF_MEMORY_WRITE_LOCATION, default=0xA0
+                    ): cv.hex_int_range(),
+                    cv.Optional(CONF_MAX_VALUE, default=5): cv.int_range(min=1),
+                    cv.Optional(CONF_POWER_LEVEL_OFFSET, default=0): cv.int_range(
+                        min=0, max=254
+                    ),
+                    cv.Optional(
+                        CONF_RAM_WRITE_LOCATION, default=0x80
+                    ): cv.hex_int_range(),
+                    cv.Optional(CONF_RAM_WRITE_ADDRESS): cv.hex_int_range(),
+                }
+            ),
+            validate_power_level_offset,
         ),
     }
 )
@@ -111,4 +136,12 @@ async def to_code(config):
                 power_level_config.get(CONF_MEMORY_WRITE_LOCATION)
             )
         )
+        cg.add(numb.set_power_level_offset(power_level_config[CONF_POWER_LEVEL_OFFSET]))
+        if CONF_RAM_WRITE_ADDRESS in power_level_config:
+            cg.add(
+                numb.set_ram_write(
+                    power_level_config[CONF_RAM_WRITE_LOCATION],
+                    power_level_config[CONF_RAM_WRITE_ADDRESS],
+                )
+            )
         cg.add(numb.set_function(MicroNovaFunctions.STOVE_FUNCTION_POWER_LEVEL))
