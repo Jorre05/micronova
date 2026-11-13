@@ -24,6 +24,8 @@ CONF_THERMOSTAT_TEMPERATURE = "thermostat_temperature"
 CONF_POWER_LEVEL = "power_level"
 CONF_MEMORY_WRITE_LOCATION = "memory_write_location"
 CONF_POWER_LEVEL_OFFSET = "power_level_offset"
+CONF_RAM_WRITE_LOCATION = "ram_write_location"
+CONF_RAM_WRITE_ADDRESS = "ram_write_address"
 
 MicroNovaNumber = micronova_ns.class_("MicroNovaNumber", number.Number, cg.Component)
 
@@ -77,6 +79,10 @@ CONFIG_SCHEMA = cv.Schema(
                     cv.Optional(CONF_POWER_LEVEL_OFFSET, default=0): cv.int_range(
                         min=0, max=254
                     ),
+                    cv.Optional(
+                        CONF_RAM_WRITE_LOCATION, default=0x80
+                    ): cv.hex_int_range(),
+                    cv.Optional(CONF_RAM_WRITE_ADDRESS): cv.hex_int_range(),
                 }
             ),
             validate_power_level_offset,
@@ -131,4 +137,11 @@ async def to_code(config):
             )
         )
         cg.add(numb.set_power_level_offset(power_level_config[CONF_POWER_LEVEL_OFFSET]))
+        if CONF_RAM_WRITE_ADDRESS in power_level_config:
+            cg.add(
+                numb.set_ram_write(
+                    power_level_config[CONF_RAM_WRITE_LOCATION],
+                    power_level_config[CONF_RAM_WRITE_ADDRESS],
+                )
+            )
         cg.add(numb.set_function(MicroNovaFunctions.STOVE_FUNCTION_POWER_LEVEL))

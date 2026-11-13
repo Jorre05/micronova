@@ -8,6 +8,10 @@ void MicroNovaNumber::dump_config() {
   if (this->get_function() == MicroNovaFunctions::STOVE_FUNCTION_POWER_LEVEL) {
     ESP_LOGCONFIG(TAG, "  Power level offset: %d", this->power_level_offset_);
   }
+  if (this->has_ram_write_) {
+    ESP_LOGCONFIG(TAG, "  RAM write location:%02X, address:%02X", this->ram_write_location_,
+                  this->ram_write_address_);
+  }
 }
 
 void MicroNovaNumber::process_value_from_stove(int value_from_stove) {
@@ -49,6 +53,9 @@ void MicroNovaNumber::control(float value) {
       break;
   }
   this->micronova_->queue_write_request(this->memory_write_location_, this->memory_address_, new_number);
+  if (this->has_ram_write_) {
+    this->micronova_->queue_write_request(this->ram_write_location_, this->ram_write_address_, new_number);
+  }
   this->micronova_->update();
 }
 
